@@ -30,4 +30,31 @@
   - stroke -> stroke objects
   - Segmentpoints -> Array of indices indicating the points of segmentation including the end points
   - Segment types -> Array of the sypes of the segmentpoints
+5. You stroke segmentation should follow the steps outlined in the paper
+ - Construct an array of the cumulative arc lengths between each pair of consecutive sampled points.
+ - Construct an array of smoothed pen speeds at each pont. The size of the window over which smoothing occurs is on eof the parameters you willl need to adjust.
+ - Construct an array of tangents 
+ - Define curvature - change in orientation over change in position along the arc length.
+    - Convert the slopes to angles with the arc tangent function.
+    - To see a problem by the arc tangent, plot the arctangent of the slopes that you obtained for strokes 
+    - Write and test a method called correct_angle_curve.
+6. Indentify corners. Two creterio.
+  - Use speed alone to threshold local minima
+  - Threshold local curviture maxima
+7. Combine the two solutions
+8. Classify the segment points as arcs or lines
+  - For each segment, fit a line using linear reggression, and fit a circle using the provided fit_circle.py
+  - Calculate the residual errors for the line and the circle 
+  - Using the residual errors, classify the lines as arcs or lines
+9. eval_all_strokes and eval_stroke will help you visualize your shapes
+#### Parameters 
+- Size of window for smoothing: Uses five tap smoothing filter
+- Size of window for computing tangents: 11
+- Speed threshold: 25%
+- Curvature threshold: .75degree/pixel
+- Speed threshold 2: 80% of average
+- Mini distance between two corners: You decide
+- Minimum arc angle: 36 degrees
+#### Merge adjacent segments
+
 
