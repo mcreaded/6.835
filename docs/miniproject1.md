@@ -22,3 +22,12 @@
   - Stroke segmentation not implemented
   - Hence you will see all the strokes appear on the graph
 #### Segmenting the strokes
+1. Identify corners
+2. Classify the segments as lines or arcs
+3. Free to create your own structure
+4. Provide sement_stroke(stroke)
+  - returns segmentpoints, segment types
+  - stroke -> stroke objects
+  - Segmentpoints -> Array of indices indicating the points of segmentation including the end points
+  - Segment types -> Array of the sypes of the segmentpoints
+
