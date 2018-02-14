@@ -10,7 +10,7 @@
 2. Use Piazza or email wcaruso.mit.edu for help
 3. Expected is what is being outlined here
 4. Collections of issues becuase of a real pen input
-5. Uses Python 3.6
+5. *Uses Python 3.6*
 #### Getting Started 
 1. Create a vertual env?
 2. Install dependencies
