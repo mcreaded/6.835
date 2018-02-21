@@ -12,12 +12,6 @@ from circle_fit import circle_fit
 
 
 def correct_angle_curve():
-    """
-    Corrects the problem cause by arctangent by shifting angles within 2*PI
-    :param angles: angles
-    :return: shifted angles between 0 and 2*PI
-    """
-
     raise NotImplementedError('YOUR CODE HERE')
 
 
@@ -41,6 +35,6 @@ def segment_stroke(stroke):
 
     # 7. CLASSIFY SEGMENTS
 
-    # 9. MERGE SEGMENTS
+    # 8. MERGE SEGMENTS
 
     return segpoints, segtypes

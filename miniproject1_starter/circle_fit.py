@@ -16,4 +16,4 @@ def circle_fit(xs, ys):
     yc = -0.5 * res[1]
 
     r = math.sqrt((xc*xc + yc*yc - res[2]))
-    return xc, yc, r
+    return np.array(xc)[0][0], np.array(yc)[0][0], r

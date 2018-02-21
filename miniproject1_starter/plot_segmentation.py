@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from matplotlib import patches
 from circle_fit import circle_fit
 
+import numpy as np
+
 plot_number = 1
 
 def plot_segmentation(stroke, segpoints, segtypes, all=False):
@@ -34,6 +36,7 @@ def plot_segmentation(stroke, segpoints, segtypes, all=False):
             plt.plot([start_x, end_x], [start_y, end_y], 'r-', linewidth=6, alpha=0.7)
         else:
             # Plot a curve
+            midpoint = int((segpoints[i+1] - segpoints[i])/2)
             y_coords = stroke.y[segpoints[i]: segpoints[i+1]]
             x_coords = stroke.x[segpoints[i]: segpoints[i+1]]
             if type(x_coords) is not list:
@@ -43,39 +46,21 @@ def plot_segmentation(stroke, segpoints, segtypes, all=False):
             xc, yc, R = circle_fit(x_coords, y_coords)
 
             center = (xc.item(0), yc.item(0))
-            angle_1 = math.degrees(math.atan2(float(y_coords[-1] - yc), float(x_coords[-1] - xc)))
-            angle_2 = math.degrees(math.atan2(float(y_coords[0] - yc), float(x_coords[0] - xc)))
+            start_angle = math.degrees(math.atan2(float(y_coords[-1] - yc), float(x_coords[-1] - xc)))
+            end_angle = math.degrees(math.atan2(float(y_coords[0] - yc), float(x_coords[0] - xc)))
+            mid_angle = math.degrees(math.atan2(float(y_coords[midpoint] - yc), float(x_coords[midpoint] - xc)))
 
-            angle_mid = ((angle_1 + angle_2) % 360) / 2
-            angle_min = min(angle_1, angle_2)
-            angle_max = max(angle_1, angle_2)
+            if start_angle < 0:
+                start_angle += 360
+            if end_angle < 0:
+                end_angle += 360
+            if mid_angle < 0:
+                mid_angle += 360
 
-            if angle_min < angle_mid < angle_max:
-                if angle_2 < 0:
-                    print("1")
-                    if 90 < angle_1 < 180:
-                        circ = patches.Wedge(center, R, angle_2, angle_1, color='g', width=20, alpha=0.7, zorder=3)
-                    else:
-                        circ = patches.Wedge(center, R, angle_1, angle_2, color='g', width=20, alpha=0.7, zorder=3)
-                else:
-                    print("2")
-                    if 90 < angle_1 < 180 or -30 > angle_1 > -180:
-                        circ = patches.Wedge(center, R, angle_2, angle_1, color='g', width=20, alpha=0.7, zorder=3)
-                    else:
-                        circ = patches.Wedge(center, R, angle_1, angle_2, color='g', width=20, alpha=0.7, zorder=3)
+            if start_angle < mid_angle < end_angle or end_angle < start_angle < mid_angle or start_angle > end_angle > mid_angle:
+                circ = patches.Wedge(center, R, start_angle, end_angle, color='g', width=20, alpha=0.7, zorder=3)
             else:
-                if angle_2 < 0:
-                    print("3")
-                    if angle_1 < 0:
-                        circ = patches.Wedge(center, R, angle_2, angle_1, color='g', width=20, alpha=0.7, zorder=3)
-                    else:
-                        circ = patches.Wedge(center, R, angle_2, angle_1, color='g', width=20, alpha=0.7, zorder=3)
-                else:
-                    print("4")
-                    circ = patches.Wedge(center, R, angle_1, angle_2, color='g', width=20, alpha=0.7, zorder=3)
-            print("angle1", angle_1)
-            print("angle2", angle_2)
-
+                circ = patches.Wedge(center, R, end_angle, start_angle, color='g', width=20, alpha=0.7, zorder=3)
             fig = plt.gcf()
             ax = fig.gca()
             ax.add_patch(circ)
