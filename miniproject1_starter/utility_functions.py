@@ -71,6 +71,9 @@ def compute_tangent(stroke, index=4,w=11):
 	elif index>n-half_wind:
 		return end_match(stroke,_w=half_wind);
 	return regress(stroke,index=index,_w=w)
+#########
+####Compute curvature
+###########
 def begin_derv(d,theta,_w=5):
 	u = _w/2+1
 	x = d[0:u]
