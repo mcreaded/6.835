@@ -67,12 +67,32 @@ def compute_tangent(stroke, index=4,w=11):
 	n = len(stroke.x)
 	half_wind = w/2
 	if index<half_wind:
-		return begin_match(stroke,_w=half_wind):
+		return begin_match(stroke,_w=half_wind);
 	elif index>n-half_wind:
 		return end_match(stroke,_w=half_wind);
 	return regress(stroke,index=index,_w=w)
-def tangent_correction(stroke,w=11):
+def begin_derv(d,theta,_w=5):
+	u = _w/2+1
+	x = d[0:u]
+	y = theta[0:u]
+	return stats.linregress(x,y)
+def end_derv(d,theta,_w=5):
+	u = _w/2+1
+	x = d[-u:]
+	y = theta[-u:]
+	return stats.linregress(x,y)
+def derv(d,theta,index=5,_w=5):
+	u = _w/2+1
+	v = _w/2
+	x = d[index-v:index+u]
+	y = theta[index-v:index+u]
+	return stats.linregress(x,y)
 
-
+def compute_curvature(d,theta,index=0,w=11):
+	if index<=w/2:
+		return begin_derv(d,theta,_w=w)
+	elif index>=len(d)-w/2:
+		return end_derv(d,theta,_w=w)
+	return derv(d,theta,index=index,_w=w)
 
 

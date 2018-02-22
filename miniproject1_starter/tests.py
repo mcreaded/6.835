@@ -27,3 +27,23 @@ arc_len_tester()
 ######################
 def test_speed():
 	return None
+#####
+###testing the ligression
+#######
+# def x_you(x,y):
+# 	print stats.linregress(x,y)
+# x = [1,2,3,4,5,6,7]
+# y= [(_x**2)/8.0 for _x in x]
+# x_you(x,y)
+# y = [2*_x+1.0 for _x in x]
+# x = [1.01,1.99,3.1,3.9,5.03,5.89,7.11]
+# x_you(x,y)
+# x = [1,2,3,4,5,6,7]
+# y = [2*_x+1.0 for _x in x]
+# x_you(x,y)
+# x = [-2,-1,0,1,2,3,4]
+# y= [(_x**2)/8.0 for _x in x]
+# x_you(x,y)
+##########
+###end of testing
+#########
