@@ -55,12 +55,15 @@ def begin_match(stroke,_w=11):
 	y = stroke.y[0:_w+1]
 	return stats.linregress(x, y)
 def end_match(stroke,_w=11):
-	x = stroke.x[-(_w+1):]
-	y = stroke.y[-(_w+1):]
+	u = _w/2+1
+	x = stroke.x[u:]
+	y = stroke.y[u:]
 	return stats.linregress(x, y)
 def regress(stroke,index=4,_w=11):
-	x = stroke.x[index-_w/2:index+1+_w/2]
-	y = stroke.y[index-_w/2:index+1+_w/2]
+	u = _w/2+1
+	v = _w/2
+	x = stroke.x[index-v:index+u]
+	y = stroke.y[index-v:index+u]
 	return stats.linregress(x,y)
 
 def compute_tangent(stroke, index=4,w=11):
@@ -97,5 +100,8 @@ def compute_curvature(d,theta,index=0,w=11):
 	elif index>=len(d)-w/2:
 		return end_derv(d,theta,_w=w)
 	return derv(d,theta,index=index,_w=w)
+#######
+###Detect corners
+########
 
 
