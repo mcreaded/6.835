@@ -1,2 +1,11 @@
-### Methods
-#### 'GestureSets'
+### Code
+#### `GestureSets`
+#### `load_gestures()`
+#### `Sequences`
+#### `show_gui.py`
+#### `Frame`
+#### `Gesture.py`
+#### `normalize_frame.py`
+#### `classify_nn.py`
+#### `test_classify_nn.py`
+#### `test_normalize_frames.py`
