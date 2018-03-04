@@ -15,20 +15,22 @@ np.set_printoptions(threshold=np.nan)
 
 # properties
 num_frames = 36
-ratio = 0.7
+ratio = 0.9
 
 # 6. FORMAT DATA
 gesture_sets = load_gestures()
-normalize_frames(gesture_sets, num_frames)
+_gesture_sets=normalize_frames(gesture_sets, num_frames)
 
 samples, labels = [], []
 
-for gs in gesture_sets:
+for gs in _gesture_sets:
     for seq in gs.sequences:
         sample = np.concatenate(list(map(lambda x: x.frame, seq.frames)))
         samples.append(sample)
+        #print sample.shape
         labels.append(int(gs.label))
-
+#print np.array(samples).shape
+print len(samples)
 X, Y = np.vstack(samples), np.array(labels)
 
 X_train, X_test, y_train, y_test = train_test_split(X, Y, train_size=ratio, random_state=10)
