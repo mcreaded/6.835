@@ -19,9 +19,10 @@ np.set_printoptions(threshold=np.nan)
 
 
 # 6. FORMAT DATA
-gesture_sets = load_gestures()
-_gesture_sets=normalize_frames(gesture_sets, num_frames)
+
 def run_tree(ext = 0,num_frames = 36,ratio = 0.6):
+    gesture_sets = load_gestures()
+    _gesture_sets=normalize_frames(gesture_sets, num_frames)
     if ext==1: 
         _gesture_sets = extend_all(_gesture_sets)
 
