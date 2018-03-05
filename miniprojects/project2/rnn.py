@@ -1,6 +1,6 @@
 import numpy as np
 from keras.models import Model
-from keras.layers import Input, LSTM, Dense, concatenate
+from keras.layers import Input, LSTM, Dense, concatenate, Bidirectional 
 
 from normalize_frames import normalize_frames
 from load_gestures import load_gestures
@@ -19,11 +19,14 @@ for gs in _gesture_sets:
         labels.append(gs.label)
 
 X = np.array(samples)
+print X.shape
 Y = np.vstack(labels)
 
 # Shuffle data
 p = np.random.permutation(len(X))
 X = X[p]
+print X.shape
+print X.shape[1:]
 Y = Y[p]
 
 # 10. CREATE AND TRAIN MODEL
@@ -43,13 +46,13 @@ def run_lstm(batch_size = 12,epochs = 100,latent_dim = 16):
             verbose=1,
             validation_split=0.3,
             shuffle=True)
-  return fit 
+  return fit.history 
 def run_bid_lstm(batch_size = 12,epochs = 100,latent_dim = 16):
   input_layer = Input(shape=(X.shape[1:]))
-  lstm = LSTM(latent_dim)(input_layer)
-  _lstm = LSTM(latent_dim,go_backwords=True)(input_layer)
-  _merged = concatenate([lstm,_lstm],axis=0)
-  dense = Dense(latent_dim, activation='relu')(_merged)
+  lstm = Bidirectional(LSTM(latent_dim))(input_layer)
+  
+  #_merged = concatenate([lstm,_lstm],axis=0)
+  dense = Dense(2*latent_dim, activation='relu')(lstm)
   pred = Dense(len(gesture_sets), activation='softmax')(dense)
 
   model = Model(inputs=input_layer, outputs=pred)
@@ -62,5 +65,8 @@ def run_bid_lstm(batch_size = 12,epochs = 100,latent_dim = 16):
             verbose=1,
             validation_split=0.3,
             shuffle=True)
-  return fit
+  return fit.history
+
+#print run_bid_lstm()
+
 

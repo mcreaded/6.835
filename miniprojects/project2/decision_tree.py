@@ -15,7 +15,7 @@ np.set_printoptions(threshold=np.nan)
 
 # properties
 num_frames = 36
-ratio = 0.9
+ratio = 0.6
 
 # 6. FORMAT DATA
 gesture_sets = load_gestures()
