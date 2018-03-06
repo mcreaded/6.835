@@ -6,6 +6,7 @@ from sklearn.metrics import accuracy_score
 from normalize_frames import normalize_frames
 from load_gestures import load_gestures
 from frame_dist_comp import extend_all
+from comp_angs import extend_angles
 
 
 joints = ['head', 'neck', 'left_shoulder', 'left_elbow', 'left_hand', 'right_shoulder', 'right_elbow', 'right_hand', 'torso', 'left_hip', 'right_hip']
@@ -25,6 +26,13 @@ def run_tree(ext = 0,num_frames = 36,ratio = 0.6):
     _gesture_sets=normalize_frames(gesture_sets, num_frames)
     if ext==1: 
         _gesture_sets = extend_all(_gesture_sets)
+    elif ext==2: 
+        _gesture_sets = extend_angles(_gesture_sets)
+    elif ext==3: 
+        _gesture_sets = extend_all(_gesture_sets)
+        _gesture_sets = extend_angles(_gesture_sets)
+    
+
 
     samples, labels = [], []
 
