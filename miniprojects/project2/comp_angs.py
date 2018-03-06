@@ -12,15 +12,16 @@ def compute_dist(p1,p2,p3):
 	angles = [ang(p1, p2),ang(p1, p3),ang(p1, p3)]
 	return angles
 def extend_frame(frame):
-	_frame = dc(frame.frame)
+	_frame = dc(frame)
 	#point_map = [(frame.left_hand(),frame.left_elbow(),frame.left_shoulder()),(frame.right_hand(),frame.right_elbow(),frame.right_shoulder()),
 		#(frame.right_hip(),frame.right_shoulder(),frame.right_elbow()),(frame.left_hip(),frame.left_shoulder(),frame.left_elbow())]
 	#print np.array(point_map).shape
 	point_map = [(frame.left_hand(),frame.left_elbow(),frame.left_shoulder()),(frame.right_hand(),frame.right_elbow(),frame.right_shoulder())]
 	for i in point_map:
 		angles = compute_dist(i[0],i[1],i[2])
-		_frame.extend(angles)
-	return frame
+		_frame.frame.extend(angles)
+	
+	return _frame
 def extend_seq(seq):
 	_seq  = dc(seq)
 	for f in range(len(_seq.frames)):
@@ -35,3 +36,4 @@ def extend_angles(gest_set):
 
 	#[[[extend_frame(fr) for fr in seq.frames] for seq in gs.sequences]for gs in _gest_set]
 	return _gest_set
+

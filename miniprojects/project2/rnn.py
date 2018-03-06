@@ -89,6 +89,6 @@ def run_bonus_rnn(batch_size = 12,epochs = 100,latent_dim = 16):
             validation_split=0.3,
             shuffle=True)
   return fit.history
-print run_bonus_rnn()
+#print run_bonus_rnn()
 
 

@@ -8,14 +8,14 @@ def compute_dist(p1,p2,p3):
 	return inters_d/total
 
 def extend_frame(frame):
-	_frame = dc(frame.frame)
+	_frame = dc(frame)
 	point_map = [(frame.left_hand(),frame.left_elbow(),frame.left_shoulder()),(frame.right_hand(),frame.right_elbow(),frame.right_shoulder()),
 		(frame.right_hip(),frame.right_shoulder(),frame.right_elbow()),(frame.left_hip(),frame.left_shoulder(),frame.left_elbow())]
 	#print np.array(point_map).shape
 	for i in point_map:
 		dist = 130.0*compute_dist(i[0],i[1],i[2])
-		_frame.append(dist)
-	return frame
+		_frame.frame.append(dist)
+	return _frame
 def extend_seq(seq):
 	_seq  = dc(seq)
 	for f in range(len(_seq.frames)):
