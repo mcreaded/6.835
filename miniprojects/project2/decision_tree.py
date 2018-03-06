@@ -31,6 +31,7 @@ def run_tree(ext = 0,num_frames = 36,ratio = 0.6):
     elif ext==3: 
         _gesture_sets = extend_all(_gesture_sets)
         _gesture_sets = extend_angles(_gesture_sets)
+    num_features = len(_gesture_sets[0].sequences[0].frames[0].frame)
     
 
 
@@ -67,7 +68,7 @@ def run_tree(ext = 0,num_frames = 36,ratio = 0.6):
 
 
     # 8. VISUALIZE MODEL
-    feature_names = ['frame ' + str(i)+' - '+str(joints[i%11])+' - '+str(dims[i%3]) for i in range(33*num_frames)]
+    feature_names = ['frame ' + str(i)+' - '+str(joints[i%11])+' - '+str(dims[i%3]) for i in range(num_features*num_frames)]
 
     dot_data = export_graphviz(
         clf,
