@@ -1,10 +1,11 @@
 import numpy as np
 import numpy.linalg as la
+from copy import deepcopy as dc
 def ang(v1, v2):
     cosang = np.dot(v1, v2)
     sinang = la.norm(np.cross(v1, v2))
     return np.arctan2(sinang, cosang)
-print ang([1,2,3],[2,3,4])
+#print ang([1,2,3],[2,3,4])
 
 
 def compute_dist(p1,p2,p3):
