@@ -39,7 +39,7 @@ Leap.loop({ hand: function(hand) {
   // Get the tile that the player is currently selecting, and highlight it
   //selectedTile = ?
 
-  var selectedTile = getIntersectingTile(cursorPosition);
+  selectedTile = getIntersectingTile(cursorPosition);
   var color = Colors.RED;
   if(!(selectedTile==false)){
     //position: {row: cursorPosition[0], col: cursorPosition[1]};
@@ -195,9 +195,8 @@ var processSpeech = function(transcript) {
 // Generate CPU speech feedback when player takes a shot
 var registerPlayerShot = function() {
   // TODO: CPU should respond if the shot was off-board
-  console.log(selectedTile);
   if (!selectedTile) {
-    generateSpeech("Not a board!");
+    generateSpeech("Not a tile! HAHAHA LOL!");
   }
   // If aiming at a tile, register the player's shot
   else {
@@ -217,7 +216,7 @@ var registerPlayerShot = function() {
     }
     // Sunk ship
     else if (result.sunkShip) {
-      generateSpeech("You sunk my ship fucker!");
+      generateSpeech("You sunk my ship sucker!");
       var shipName = result.sunkShip.get('type');
     }
     // Hit or miss
@@ -233,7 +232,7 @@ var registerPlayerShot = function() {
 
     if (!result.isGameOver) {
       // TODO: Uncomment nextTurn to move onto the CPU's turn
-      //nextTurn();
+      nextTurn();
     }
   }
 };
@@ -265,21 +264,29 @@ var registerCpuShot = function(playerResponse) {
   // TODO: Generate CPU feedback in three cases
   // Game over
   if (result.isGameOver) {
+    generateSpeech("Game over!! See you later!");
     gameState.endGame("cpu");
     return;
   }
   // Sunk ship
   else if (result.sunkShip) {
+    generateSpeech('You sunk my ship!!');
     var shipName = result.sunkShip.get('type');
   }
   // Hit or miss
   else {
     var isHit = result.shot.get('isHit');
+    if (isHit){
+      generateSpeech('hit');
+    }
+    else{
+      generateSpeech('miss');
+    }
   }
 
   if (!result.isGameOver) {
     // TODO: Uncomment nextTurn to move onto the player's next turn
-    // nextTurn();
+    nextTurn();
   }
 };
 
