@@ -54,33 +54,32 @@ Leap.loop({ hand: function(hand) {
     //  Enable the player to grab, move, rotate, and drop ships to deploy them
 
     //////////////////
+    var hover=false;
+    if(!isGrabbing){
     hover = getIntersectingShipAndOffset(cursorPosition);
+  }
     if(hover!=false){
     ship = hover.ship;
     shipOffset  = hover.offset;
   }
+
     //////////////////
 
 
 
 
     // First, determine if grabbing pose or not
-    isGrabbing = (hand.grabStrength>=.75);
+
+    isGrabbing = (hand.grabStrength>=.85);
 
     // Grabbing, but no selected ship yet. Look for one.
-    // TODO: Update grabbedShip/grabbedOffset if the user is hovering over a ship
+    // Update grabbedShip/grabbedOffset if the user is hovering over a ship
     if (!grabbedShip && isGrabbing) {
       grabbedShip=true;
     }
 
     // Has selected a ship and is still holding it
-    // TODO: Move the ship
     else if (grabbedShip && isGrabbing) {
-      //ship_pose = [left+shipOffset[0],bottom+shipOffset[1]];
-      console.log("left: ",left);
-      console.log("ship_left: ",shipOffset[0]);
-      console.log("bottom: ",bottom);
-      console.log("ship_bottom: ",shipOffset[1]);
       ship.setScreenPosition([left-shipOffset[0],bottom-shipOffset[1]]);
       ship.setScreenRotation(-hand.roll());
     }
@@ -88,6 +87,7 @@ Leap.loop({ hand: function(hand) {
     // Finished moving a ship. Release it, and try placing it.
     // TODO: Try placing the ship on the board and release the ship
     else if (grabbedShip && !isGrabbing) {
+      placeShip(ship);
       grabbedShip=false;
     }
   }
@@ -156,18 +156,32 @@ var processSpeech = function(transcript) {
   if (gameState.get('state') == 'setup') {
     // TODO: 4.3, Starting the game with speech
     // Detect the 'start' command, and start the game if it was said
-    start = userSaid(transcript,['start']);
+    var start = userSaid(transcript,['start']);
+    
     if (start) {
+      spch  = "Welcome to battleship! Just to warn you, you could quickly go down the drain.";
+      generateSpeech(spch);
+      spch  = "To setup, please place your ship on the board by grabbing, dragging and dropping! When you're happy with your placement, please say START!";
+      generateSpeech(spch);
+      spch  = "Keep in mind, if you don't place your ship, it will be on my ship and I will destroy you early!";
+      generateSpeech(spch);
+      spch  = "To go back to the setup, please refresh the page!";
+      generateSpeech(spch);
+      spch  = "when you're ready to go, point to the tile you wish to fire on, and clearly say fire";
+      generateSpeech(spch);
+     
+
       gameState.startGame();
       processed = true;
     }
   }
-
+  
   else if (gameState.get('state') == 'playing') {
     if (gameState.isPlayerTurn()) {
-      // TODO: 4.4, Player's turn
+      // 4.4, Player's turn
       // Detect the 'fire' command, and register the shot if it was said
-      fire = userSaid(transcript,['fire']);
+
+      var fire = userSaid(transcript,['fire']);
       if (fire) {
         registerPlayerShot();
 
@@ -176,11 +190,12 @@ var processSpeech = function(transcript) {
     }
 
     else if (gameState.isCpuTurn() && gameState.waitingForPlayer()) {
-      // TODO: 4.5, CPU's turn
+      //4.5, CPU's turn
       // Detect the player's response to the CPU's shot: hit, miss, you sunk my ..., game over
       // and register the CPU's shot if it was said
-      if (false) {
-        var response = "playerResponse";
+      p_response = userSaid(transcript.toLowerCase(),['hit','miss','you sunk my ship','game over']);
+      if (p_response) {
+        var response = transcript;
         registerCpuShot(response);
 
         processed = true;
@@ -196,7 +211,7 @@ var processSpeech = function(transcript) {
 var registerPlayerShot = function() {
   // TODO: CPU should respond if the shot was off-board
   if (!selectedTile) {
-    generateSpeech("Not a tile! HAHAHA LOL!");
+    generateSpeech("Not a tile! HAHAHAHAHAHAH! LOOOL!");
   }
   // If aiming at a tile, register the player's shot
   else {
@@ -210,23 +225,29 @@ var registerPlayerShot = function() {
     // TODO: Generate CPU feedback in three cases
     // Game over
     if (result.isGameOver) {
-      generateSpeech("Game over!");
+      var words = ["Bye Bye!", "See you later!", "Go home!", "Nice game!"];
+        var item = words[Math.floor(Math.random()*words.length)];
+      generateSpeech("Game over! "+item);
       gameState.endGame("player");
       return;
     }
     // Sunk ship
     else if (result.sunkShip) {
-      generateSpeech("You sunk my ship sucker!");
+      generateSpeech("I lost a ship! Who cares! Monsters don't need weapons to survive!");
       var shipName = result.sunkShip.get('type');
     }
     // Hit or miss
     else {
       var isHit = result.shot.get('isHit');
       if(isHit){
-        generateSpeech("ouch! You're mean!");
+        var words = ["You're mean!", "Surprised!", "Wow!", "I am scared!"];
+        var item = words[Math.floor(Math.random()*words.length)];
+        generateSpeech("ouch! "+item);
       }
       else{
-        generateSpeech("Miss! HAHAHAHA!");
+        var words = ["Not surprised!","You're not multimodal enough!", "Remember, this is a coordination game!", "Nice try!", "You're wasting my time!","HAHAHAHA!"];
+        var item = words[Math.floor(Math.random()*words.length)];
+        generateSpeech("Miss! "+item);
       }
     }
 
@@ -246,6 +267,8 @@ var generateCpuShot = function() {
   var tile = cpuShot.get('position');
   var rowName = ROWNAMES[tile.row]; // e.g. "A"
   var colName = COLNAMES[tile.col]; // e.g. "5"
+  generateSpeech("Fire at "+rowName+colName+'!');
+  blinkTile(tile);
 
   // TODO: Generate speech and visual cues for CPU shot
 };
@@ -260,32 +283,55 @@ var registerCpuShot = function(playerResponse) {
 
   // NOTE: Here we are using the actual result of the shot, rather than the player's response
   // In 4.6, you may experiment with the CPU's response when the player is not being truthful!
+  var isTrueFul = function(expected){
+    var match = false;
+    var resp = playerResponse.toLowerCase();
+    if (!resp.includes(expected)){
+      var words = ["Please go see an eye doctor!", "Stop lying!", "Nice try loser!", "Open your eyes!"];
+      var item = words[Math.floor(Math.random()*words.length)];
+      var speech  = "This is not a "+playerResponse+". This is a "+expected+". "+item;
+      generateSpeech(speech);
+    }
+
+  }
 
   // TODO: Generate CPU feedback in three cases
   // Game over
+  var expected = "hit";
   if (result.isGameOver) {
-    generateSpeech("Game over!! See you later!");
+    expected = "game over";
+    isTrueFul(expected);
+    generateSpeech("See you later loser!");
     gameState.endGame("cpu");
     return;
   }
   // Sunk ship
   else if (result.sunkShip) {
-    generateSpeech('You sunk my ship!!');
+    expected="sunk";
+    isTrueFul(expected);
+    generateSpeech('Rest in Piece!');
     var shipName = result.sunkShip.get('type');
   }
   // Hit or miss
   else {
     var isHit = result.shot.get('isHit');
     if (isHit){
-      generateSpeech('hit');
+      isTrueFul(expected);
+      var words = ["Got it!","Not surprised!", "Routine!", "All day!", "You're going down!","Like the ranger do!"];
+      var item = words[Math.floor(Math.random()*words.length)];
+      generateSpeech('Yay!Yay! '+item);
     }
     else{
-      generateSpeech('miss');
+      expected = "miss";
+      isTrueFul(expected);
+      var words = ["Next time!","You got lucky!", "I am going easy on you!", "I miss fired!", "You must be releived!","I can't believe it!"];
+      var item = words[Math.floor(Math.random()*words.length)];
+      generateSpeech(item);
     }
   }
 
   if (!result.isGameOver) {
-    // TODO: Uncomment nextTurn to move onto the player's next turn
+    // nextTurn to move onto the player's next turn
     nextTurn();
   }
 };
