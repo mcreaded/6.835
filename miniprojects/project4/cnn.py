@@ -98,6 +98,6 @@ model = Model(inputs=input_layer, outputs=dense_2)
 model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy']);
-model.fit_generator(data_gen,steps_per_epoch=len(x_train)/_batch_size, epochs=5);
+model.fit_generator(data_gen,steps_per_epoch=len(x_train)/_batch_size, epochs=32);
 model.save('model_2.h5')
 
