@@ -50,44 +50,40 @@ x_test = x_test.reshape(x_test.shape[0],48,48,1);
 
 ## Simple Model
 # 2. CREATE CNN MODEL
-''' 
-input_layer = Input(shape=(48, 48, 1, ));
-conv_layer = Conv2D(64,(5,5),activation='relu')(input_layer);
-pool_layer = MaxPooling2D(pool_size=(5, 5), strides=(2,2))(conv_layer);
-flatten_layer = Flatten()(pool_layer);
-dense_1 = Dense(1024,activation='relu')(flatten_layer);
-dense_2 = Dense(7,activation='softmax')(dense_1);
-# 3. A) DATA BATCH PROCESS
-_batch_size = 256;
-data_gen = ImageDataGenerator().flow(x_train, y_train, batch_size=_batch_size);
-# 3. B) TRAIN AND SAVE MODEL
-model = Model(inputs=input_layer, outputs=dense_2)
-model.compile(loss='categorical_crossentropy',
-              optimizer='adam',
-              metrics=['accuracy']);
-model.fit_generator(data_gen,steps_per_epoch=len(x_train)/_batch_size, epochs=5);
-model.save('model.h5')
-'''
-
-
-## More complicated model
-# 2. CREATE CNN MODEL
-
-input_layer = Input(shape=(48, 48, 1, ));
-conv_layer = Conv2D(64,(5,5),activation='relu')(input_layer);
-pool_layer = MaxPooling2D(pool_size=(5, 5), strides=(2,2))(conv_layer);
-flatten_layer = Flatten()(pool_layer);
-dense_1 = Dense(1024,activation='relu')(flatten_layer);
-dense_2 = Dense(7,activation='softmax')(dense_1);
-# 3. A) DATA BATCH PROCESS
-_batch_size = 256;
-data_gen = ImageDataGenerator().flow(x_train, y_train, batch_size=_batch_size);
-# 3. B) TRAIN AND SAVE MODEL
-model = Model(inputs=input_layer, outputs=dense_2)
-model.compile(loss='categorical_crossentropy',
-              optimizer='adam',
-              metrics=['accuracy']);
-model.fit_generator(data_gen,steps_per_epoch=len(x_train)/_batch_size, epochs=32);
-model.save('model_2.h5')
-
+def cnn_model_one(num_filters=64,filter_size =(5,5), epochs=5,pool_size=(5,5),batch_size=256,stride=2,filename='model_1.h5'):
+  input_layer = Input(shape=(48, 48, 1, ));
+  conv_layer = Conv2D(num_filters,filter_size,activation='relu')(input_layer);
+  pool_layer = MaxPooling2D(pool_size=pool_size, strides=(2,2))(conv_layer);
+  flatten_layer = Flatten()(pool_layer);
+  dense_1 = Dense(1024,activation='relu')(flatten_layer);
+  dense_2 = Dense(7,activation='softmax')(dense_1);
+  # 3. A) DATA BATCH PROCESS
+  _batch_size = 256;
+  data_gen = ImageDataGenerator().flow(x_train, y_train, batch_size=_batch_size);
+  # 3. B) TRAIN AND SAVE MODEL
+  model = Model(inputs=input_layer, outputs=dense_2)
+  model.compile(loss='categorical_crossentropy',
+                optimizer='adam',
+                metrics=['accuracy']);
+  model.fit_generator(data_gen,steps_per_epoch=len(x_train)/_batch_size, epochs=epochs);
+  model.save(filename);
+def cnn_model_two(num_filters=64,filter_size =(5,5), epochs=5,pool_size=(5,5),batch_size=256,stride=2,filename="model_1.h5"):
+  input_layer = Input(shape=(48, 48, 1, ));
+  conv_layer = Conv2D(num_filters,filter_size,activation='relu')(input_layer);
+  pool_layer = MaxPooling2D(pool_size=pool_size, strides=(stride,stride))(conv_layer);
+  conv_layer2 = Conv2D(num_filters,filter_size,activation='relu')(pool_layer);
+  pool_layer = MaxPooling2D(pool_size=pool_size, strides=(stride,stride))(conv_layer2);
+  flatten_layer = Flatten()(pool_layer);
+  dense_1 = Dense(1024,activation='relu')(flatten_layer);
+  dense_2 = Dense(7,activation='softmax')(dense_1);
+  # 3. A) DATA BATCH PROCESS
+  _batch_size = 256;
+  data_gen = ImageDataGenerator().flow(x_train, y_train, batch_size=_batch_size);
+  # 3. B) TRAIN AND SAVE MODEL
+  model = Model(inputs=input_layer, outputs=dense_2)
+  model.compile(loss='categorical_crossentropy',
+                optimizer='adam',
+                metrics=['accuracy']);
+  model.fit_generator(data_gen,steps_per_epoch=len(x_train)/_batch_size, epochs=epochs);
+  model.save(filename)
 

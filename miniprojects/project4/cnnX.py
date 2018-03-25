@@ -45,7 +45,7 @@ conv1 = Conv3D(64,5,activation='relu')(shape);
 pool = MaxPool3D(pool_size=(2, 2, 2), strides=(1,1,1))(conv1);
 flat = Flatten()(pool);
 dense1 = Dense(128,activation='relu')(flat)
-dense2 = Dense(7,activation='relu')(dense1)
+dense2 = Dense(7,activation='softmax')(dense1)
 
 # 11. TRAIN AND TEST MODEL
 model = Model(inputs=inp,outputs=dense2);
