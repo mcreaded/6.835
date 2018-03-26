@@ -78,7 +78,7 @@ def cnn_model_two(num_filters=64,filter_size =(5,5), epochs=45,pool_size=(5,5),b
   dense_1 = Dense(1024,activation='relu')(flatten_layer);
   dense_2 = Dense(7,activation='softmax')(dense_1);
   # 3. A) DATA BATCH PROCESS
-  data_gen = ImageDataGenerator().flow(x_train, y_train, batch_size=batch_size);
+  data_gen = ImageDataGenerator(rotation_range=45).flow(x_train, y_train, batch_size=batch_size);
   # 3. B) TRAIN AND SAVE MODEL
   model = Model(inputs=input_layer, outputs=dense_2)
   model.compile(loss='categorical_crossentropy',
