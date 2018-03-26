@@ -71,8 +71,8 @@ def cnn_model_two(num_filters=64,filter_size =(5,5), epochs=32,pool_size=(5,5),b
   input_layer = Input(shape=(48, 48, 1, ));
   conv_layer = Conv2D(num_filters,filter_size,activation='relu')(input_layer);
   pool_layer = MaxPooling2D(pool_size=pool_size, strides=(stride,stride))(conv_layer);
-  #drop = Dropout(.125)(pool_layer);
-  conv_layer2 = Conv2D(num_filters,filter_size,activation='relu')(pool_layer)#(drop);
+  drop = Dropout(.25)(pool_layer);
+  conv_layer2 = Conv2D(num_filters,filter_size,activation='relu')(drop);
   pool_layer = MaxPooling2D(pool_size=pool_size, strides=(stride,stride))(conv_layer2);
   flatten_layer = Flatten()(pool_layer);
   dense_1 = Dense(1024,activation='relu')(flatten_layer);
@@ -87,4 +87,12 @@ def cnn_model_two(num_filters=64,filter_size =(5,5), epochs=32,pool_size=(5,5),b
   model.fit_generator(data_gen,steps_per_epoch=len(x_train)/batch_size, epochs=epochs);
   model.save(filename)
 cnn_model_two(filename='model_2.h5')
+def scorer(filename='model_2.h5'):
+  from keras.models import Model, load_model
+  model = load_model(filename);
+  train_score = model.evaluate(x_train,y_train);
+  test_score = model.evaluate(x_test,y_test);
+  print("training score",train_score);
+  print("test_score",test_score);
+scorer()
 
