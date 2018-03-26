@@ -67,7 +67,7 @@ def cnn_model_one(num_filters=64,filter_size =(5,5), epochs=5,pool_size=(5,5),ba
                 metrics=['accuracy']);
   model.fit_generator(data_gen,steps_per_epoch=len(x_train)/_batch_size, epochs=epochs);
   model.save(filename);
-def cnn_model_two(num_filters=64,filter_size =(5,5), epochs=32,pool_size=(5,5),batch_size=256,stride=2,filename="model_1.h5"):
+def cnn_model_two(num_filters=64,filter_size =(5,5), epochs=45,pool_size=(5,5),batch_size=256,stride=2,filename="model_1.h5"):
   input_layer = Input(shape=(48, 48, 1, ));
   conv_layer = Conv2D(num_filters,filter_size,activation='relu')(input_layer);
   pool_layer = MaxPooling2D(pool_size=pool_size, strides=(stride,stride))(conv_layer);
@@ -90,8 +90,8 @@ cnn_model_two(filename='model_2.h5')
 def scorer(filename='model_2.h5'):
   from keras.models import Model, load_model
   model = load_model(filename);
-  train_score = model.evaluate(x_train,y_train);
-  test_score = model.evaluate(x_test,y_test);
+  train_score = model.evaluate(x_train,np.array(y_train));
+  test_score = model.evaluate(x_test,np.array(y_test));
   print("training score",train_score);
   print("test_score",test_score);
 scorer()
