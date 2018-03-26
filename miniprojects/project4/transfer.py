@@ -28,14 +28,18 @@ x_test = [np.expand_dims(image.img_to_array(image.load_img(test_path+im,grayscal
 order = ['angry','disgust','fear','happy','neutral','sad','surprise']
 y_train = np.array([compute_label(name) for name in order])
 y_test = np.array([compute_label(name) for name in order])
-x_train = x_train/255.0
-x_test = x_test/255.0
+print y_test
+x_train = np.array(x_train).reshape(7,48,48,1)/255.0
+x_test = np.array(x_test).reshape(7,48,48,1)/255.0
 print "shapes"
 print x_train.shape
 print x_test.shape
 model = load_model('model_2.h5')
 
-fit = model.fit(x_train,y_train,epochs=10, batch_size=6,verbose=1)
-for x in x_test:
-  custom = model.predict(x)
-  plot_emotion_prediction(custom[0])
+fit = model.fit(x_train,y_train,epochs=45, batch_size=3,verbose=1,shuffle=True)
+evals = model.evaluate(x_test,y_test);
+print fit.history
+print evals
+
+custom = model.predict(x_test)
+##plot_emotion_prediction(custom[0])
