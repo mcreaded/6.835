@@ -71,14 +71,14 @@ def cnn_model_two(num_filters=64,filter_size =(5,5), epochs=45,pool_size=(5,5),b
   input_layer = Input(shape=(48, 48, 1, ));
   conv_layer = Conv2D(num_filters,filter_size,activation='relu')(input_layer);
   pool_layer = MaxPooling2D(pool_size=pool_size, strides=(stride,stride))(conv_layer);
-  drop = Dropout(.25)(pool_layer);
+  drop = Dropout(.2)(pool_layer);
   conv_layer2 = Conv2D(num_filters,filter_size,activation='relu')(drop);
   pool_layer = MaxPooling2D(pool_size=pool_size, strides=(stride,stride))(conv_layer2);
   flatten_layer = Flatten()(pool_layer);
   dense_1 = Dense(1024,activation='relu')(flatten_layer);
   dense_2 = Dense(7,activation='softmax')(dense_1);
   # 3. A) DATA BATCH PROCESS
-  data_gen = ImageDataGenerator(rotation_range=45).flow(x_train, y_train, batch_size=batch_size);
+  data_gen = ImageDataGenerator(rotation_range=10).flow(x_train, y_train, batch_size=batch_size);
   # 3. B) TRAIN AND SAVE MODEL
   model = Model(inputs=input_layer, outputs=dense_2)
   model.compile(loss='categorical_crossentropy',
