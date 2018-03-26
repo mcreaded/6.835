@@ -38,20 +38,20 @@ for sam in xrange(x_train.shape[0]):
 
     _x_train[sam][x,y,z]+=1;
 # 10. CREATE MODEL OF CHOICE
+def cnn3D_model():
+  inp = Input(shape=(24, 24, 24));
+  shape = Reshape((24,24,24,1))(inp);
+  conv1 = Conv3D(64,5,activation='relu')(shape);
+  pool = MaxPool3D(pool_size=(2, 2, 2), strides=(1,1,1))(conv1);
+  flat = Flatten()(pool);
+  dense1 = Dense(128,activation='relu')(flat)
+  dense2 = Dense(7,activation='softmax')(dense1)
 
-inp = Input(shape=(24, 24, 24));
-shape = Reshape((24,24,24,1))(inp);
-conv1 = Conv3D(64,5,activation='relu')(shape);
-pool = MaxPool3D(pool_size=(2, 2, 2), strides=(1,1,1))(conv1);
-flat = Flatten()(pool);
-dense1 = Dense(128,activation='relu')(flat)
-dense2 = Dense(7,activation='softmax')(dense1)
-
-# 11. TRAIN AND TEST MODEL
-model = Model(inputs=inp,outputs=dense2);
-model.compile(loss='categorical_crossentropy',
-              optimizer='adam',
-              metrics=['accuracy']);
-fit = model.fit(_x_train,y_train,epochs=10,
-  batch_size=12,verbose=1,validation_split=.2,shuffle=True)
-print fit.history
+  # 11. TRAIN AND TEST MODEL
+  model = Model(inputs=inp,outputs=dense2);
+  model.compile(loss='categorical_crossentropy',
+                optimizer='adam',
+                metrics=['accuracy']);
+  fit = model.fit(_x_train,y_train,epochs=10,
+    batch_size=12,verbose=1,validation_split=.2,shuffle=True)
+  print fit.history
